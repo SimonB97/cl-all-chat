@@ -1,5 +1,5 @@
 # Running the app:
-# chainlit run chainlit_app.py -w --no-cache
+# chainlit run app.py -w --no-cache  (-w for watch mode (auto-reload), --no-cache to disable cache)
 
 import os
 import langchain
