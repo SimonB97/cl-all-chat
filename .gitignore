@@ -1,0 +1,2 @@
+.env
+app/.chainlit/.langchain.db
