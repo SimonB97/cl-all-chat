@@ -46,8 +46,8 @@ import json
 # import faiss
 import chainlit as cl
 import dotenv
-import nest_asyncio
-nest_asyncio.apply()
+# import nest_asyncio
+# nest_asyncio.apply()
 
 
 # ------- Prerequisites
@@ -92,10 +92,10 @@ def factory():
         ShellTool(),
         HumanInputRun(),
     ]
-    playwright_browser = create_async_playwright_browser()
+    # playwright_browser = create_async_playwright_browser()
 
-    playwright_tools = PlayWrightBrowserToolkit.from_browser(async_browser=playwright_browser).get_tools()
-    tools.extend(playwright_tools)
+    # playwright_tools = PlayWrightBrowserToolkit.from_browser(async_browser=playwright_browser).get_tools()
+    # tools.extend(playwright_tools)
 
     # check if all tools have an async run function
     if use_async:
