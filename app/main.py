@@ -12,7 +12,7 @@ from prompts import (
 import os
 import langchain
 from langchain import SerpAPIWrapper
-from langchain.callbacks.manager import Callbacks, AsyncCallbackManagerForChainRun
+from langchain.callbacks.manager import Callbacks   # , AsyncCallbackManagerForChainRun
 # from langchain.prompts import ChatPromptTemplate
 from langchain.agents import Tool, AgentType, initialize_agent
 from langchain.agents.agent import AgentExecutor, ExceptionTool
@@ -41,24 +41,26 @@ from langchain.schema import BaseMessage, AIMessage, AgentAction, AgentFinish, O
 from langchain.agents.openai_functions_multi_agent.base import _FunctionsAgentAction, _format_intermediate_steps
 from typing import Union, List, Any, Tuple, Dict, Optional
 from json import JSONDecodeError
-import asyncio
+# import asyncio
 import json
 # import faiss
-import chainlit as cl
+# import chainlit as cl
 import dotenv
-import nest_asyncio
-nest_asyncio.apply()
+# import nest_asyncio
+# nest_asyncio.apply()
 
 
 # ------- Prerequisites
+# Streamlit
+from langchain.callbacks import StreamlitCallbackHandler
+import streamlit as st
+st_callback = StreamlitCallbackHandler(st.container())
+
 dotenv.load_dotenv()
-config = get_config("config.yaml")
+config = get_config("./../config.yaml")
 init_langchain(config)
 
-
-# Factory
 use_async = False
-@cl.langchain_factory(use_async=use_async)
 def factory():
     # Initialize the OpenAI language model
     llm = ChatOpenAI(
@@ -92,9 +94,9 @@ def factory():
         ShellTool(),
         HumanInputRun(),
     ]
-    playwright_browser = create_async_playwright_browser()
+    playwright_browser = create_sync_playwright_browser()
 
-    playwright_tools = PlayWrightBrowserToolkit.from_browser(async_browser=playwright_browser).get_tools()
+    playwright_tools = PlayWrightBrowserToolkit.from_browser(sync_browser=playwright_browser).get_tools()
     tools.extend(playwright_tools)
 
     # check if all tools have an async run function
@@ -136,6 +138,18 @@ def factory():
     return agent_exec
 
 
+def main():
+    agent_exec = factory()
+
+    if prompt := st.chat_input():
+        st.chat_message("user").write(prompt)
+        with st.chat_message("assistant"):
+            st_callback = StreamlitCallbackHandler(st.container())
+            response = agent_exec.run(prompt, callbacks=[st_callback])
+            st.write(response)
+
+if __name__ == "__main__":
+    main()
 
 # ----- Custom classes and functions ----- #
 
