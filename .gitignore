@@ -1,2 +1,3 @@
 .env
 app/.chainlit/.langchain.db
+app/__pycache__/
